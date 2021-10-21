@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.phoneapp.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_contactsFragment"
+            app:destination="@id/contactsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_randomNumberFragment"
+            app:destination="@id/randomNumberFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.example.phoneapp.contacts.ContactsFragment"
+        android:label="Select a contact to block"
+        tools:layout="@layout/fragment_contacts" />
+    <dialog
+        android:id="@+id/randomNumberFragment"
+        android:name="com.example.phoneapp.random.RandomNumberFragment"
+        android:label="fragment_random_number"
+        tools:layout="@layout/fragment_random_number" />
+</navigation>
