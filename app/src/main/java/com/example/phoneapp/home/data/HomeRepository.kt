@@ -1,6 +1,6 @@
-package com.example.phoneapp.home
+package com.example.phoneapp.home.data
 
-import com.example.phoneapp.BlockedContactData
+import com.example.phoneapp.home.models.BlockedContactData
 import com.example.phoneapp.data.DataBaseDB
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

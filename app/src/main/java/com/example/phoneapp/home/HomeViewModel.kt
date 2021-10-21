@@ -3,7 +3,8 @@ package com.example.phoneapp.home
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.phoneapp.BlockedContactData
+import com.example.phoneapp.home.data.HomeRepository
+import com.example.phoneapp.home.models.BlockedContactData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

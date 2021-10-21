@@ -2,7 +2,7 @@ package com.example.phoneapp.random
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.phoneapp.BlockedContactData
+import com.example.phoneapp.home.models.BlockedContactData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.example.phoneapp.home
+package com.example.phoneapp.home.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.phoneapp.R
 import com.example.phoneapp.databinding.FragmentHomeBinding
+import com.example.phoneapp.home.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 

@@ -3,7 +3,7 @@ package com.example.phoneapp.contacts
 import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.ContactsContract
-import com.example.phoneapp.BlockedContactData
+import com.example.phoneapp.home.models.BlockedContactData
 import com.example.phoneapp.data.DataBaseDB
 import javax.inject.Inject
 

@@ -1,15 +1,15 @@
-package com.example.phoneapp.home
+package com.example.phoneapp.home.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.phoneapp.BlockedContactData
+import com.example.phoneapp.home.models.BlockedContactData
 import com.example.phoneapp.databinding.BlockedNumbersLayoutBinding
 
 class BlockedContactAdapter(val delete: (BlockedContactData) -> Unit) :
-    ListAdapter<BlockedContactData, BlockedContactAdapter.ViewHolder>(diffutil) {
+    ListAdapter<BlockedContactData, BlockedContactAdapter.ViewHolder>(diffUtil) {
 
     inner class ViewHolder(private val itemBinding: BlockedNumbersLayoutBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
@@ -23,7 +23,7 @@ class BlockedContactAdapter(val delete: (BlockedContactData) -> Unit) :
     }
 
     companion object {
-        val diffutil = object : DiffUtil.ItemCallback<BlockedContactData>() {
+        val diffUtil = object : DiffUtil.ItemCallback<BlockedContactData>() {
             override fun areItemsTheSame(
                 oldItem: BlockedContactData,
                 newItem: BlockedContactData

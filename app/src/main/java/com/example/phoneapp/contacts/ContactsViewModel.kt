@@ -1,11 +1,10 @@
 package com.example.phoneapp.contacts
 
-import android.app.Application
 import android.content.ContentResolver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.phoneapp.BlockedContactData
+import com.example.phoneapp.home.models.BlockedContactData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch

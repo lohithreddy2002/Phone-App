@@ -1,6 +1,6 @@
 package com.example.phoneapp.random
 
-import com.example.phoneapp.BlockedContactData
+import com.example.phoneapp.home.models.BlockedContactData
 import com.example.phoneapp.data.DataBaseDB
 import javax.inject.Inject
 
