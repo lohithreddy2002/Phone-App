@@ -1,16 +1,23 @@
 package com.example.phoneapp.contacts
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SnapHelper
 import com.example.phoneapp.ContactsAdapter
 import com.example.phoneapp.databinding.FragmentContactsBinding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import java.security.Permission
 
 
 @AndroidEntryPoint
@@ -20,7 +27,15 @@ class ContactsFragment : Fragment() {
 
     val viewModel by viewModels<ContactsViewModel>()
 
-
+    private val permissionLauncher =registerForActivityResult(ActivityResultContracts.RequestPermission()){
+        if(it){
+            binding.noPermission.visibility = View.GONE
+            viewModel.getcontacts(requireContext().contentResolver)
+        }
+        else{
+            binding.noPermission.visibility = View.VISIBLE
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,6 +45,18 @@ class ContactsFragment : Fragment() {
         return binding.root
 
 
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if(ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED){
+            binding.noPermission.visibility = View.GONE
+            viewModel.getcontacts(requireContext().contentResolver)
+        }
+        else{
+            permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+        }
     }
 
     override fun onStart() {
@@ -44,13 +71,16 @@ class ContactsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = adpter
         }
-        viewModel.getcontacts(requireContext().contentResolver)
         viewModel.list.observe(viewLifecycleOwner) {
-            adpter.submitList(it.toList())
+            if (it.size > 0) {
+                binding.noBlocks.visibility = View.GONE
+                adpter.submitList(it.toList())
+            }
+            else{
+                binding.noBlocks.visibility = View.VISIBLE
+            }
         }
 
-
     }
-
 
 }

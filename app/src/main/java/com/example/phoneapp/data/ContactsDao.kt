@@ -15,7 +15,7 @@ interface ContactsDao {
     suspend fun insertContact(data: BlockedContactData)
 
     @Query("SELECT * FROM CONTACTS")
-    fun getcontacts(): Flow<List<BlockedContactData>>
+    fun getContacts(): Flow<List<BlockedContactData>>
 
 
     @Delete
@@ -23,6 +23,6 @@ interface ContactsDao {
 
 
     @Query("Select * from contacts where phone =:number")
-    fun findContact(number: String): BlockedContactData?
+    suspend fun findContact(number: String): BlockedContactData?
 
 }

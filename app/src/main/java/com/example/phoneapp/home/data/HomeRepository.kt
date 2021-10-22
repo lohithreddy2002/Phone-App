@@ -10,6 +10,6 @@ class HomeRepository @Inject constructor(private val dataBaseDB: DataBaseDB) {
 
     suspend fun deleteContact(data: BlockedContactData) = dao.deleteContact(data)
 
-    fun getAllContacts(): Flow<List<BlockedContactData>> = dao.getcontacts()
+    fun getAllContacts(): Flow<List<BlockedContactData>> = dao.getContacts()
 
 }

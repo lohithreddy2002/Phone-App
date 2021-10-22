@@ -23,8 +23,9 @@ class RandomNumberFragment : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
         binding.block.setOnClickListener {
             if(!binding.phoneNumber.text.isNullOrEmpty() && !binding.name.text.isNullOrEmpty()){
                 if(binding.phoneNumber.text!!.length != 10){
