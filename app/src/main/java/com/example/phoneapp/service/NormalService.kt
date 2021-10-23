@@ -43,6 +43,12 @@ class NormalService : Service() {
         m.isAccessible = true
         telephonyService = m.invoke(tm) as ITelephony
 
+        val notification =
+            NotificationCompat.Builder(this, "1").setContentTitle("Blocked a Call")
+                .setContentText("Blocked a call from the number $number")
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .build()
+
         CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
             val value = CoroutineScope(Dispatchers.IO).async(Dispatchers.IO) {
                 dao.findContact(number.toString())
@@ -50,19 +56,18 @@ class NormalService : Service() {
             }
             if (value.await() != null) {
                 telephonyService.endCall()
+                with(NotificationManagerCompat.from(this@NormalService)) {
+                    // notificationId is a unique int for each notification that you must define
+                    notify(1, notification)
+                }
+
+
             }
         }
 
-        val notification =
-            NotificationCompat.Builder(this, "1").setContentTitle("Blocked a Call")
-                .setContentText("Blocked a call from the number $number")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .build()
 
-        with(NotificationManagerCompat.from(this)) {
-            // notificationId is a unique int for each notification that you must define
-            notify(1, notification)
-        }
+
+
         return super.onStartCommand(intent, flags, startId)
 
     }

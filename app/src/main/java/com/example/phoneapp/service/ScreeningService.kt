@@ -27,8 +27,8 @@ class ScreeningService : CallScreeningService() {
         val string = details.handle.toString()
         Timber.tag("number").e("${string.subSequence(4, string.length)}")
         val notification =
-            NotificationCompat.Builder(this@ScreeningService, "1").setContentTitle("Times Up")
-                .setContentText("Alarm time")
+            NotificationCompat.Builder(this@ScreeningService, "1").setContentTitle("Blocked a Call from ${string.subSequence(4, string.length)} ")
+                .setContentText("Blocked a Call")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .build()
         CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
@@ -38,11 +38,12 @@ class ScreeningService : CallScreeningService() {
             Timber.tag("call").e("${value.await()}")
             if (value.await() != null) {
                 respondToCall(details, CallResponse.Builder().setDisallowCall(true).build())
+                with(NotificationManagerCompat.from(this@ScreeningService)) {
+                    // notificationId is a unique int for each notification that you must define
+                    notify(1, notification)
+                }
             }
-            with(NotificationManagerCompat.from(this@ScreeningService)) {
-                // notificationId is a unique int for each notification that you must define
-                notify(1, notification)
-            }
+
         }
 
     }
