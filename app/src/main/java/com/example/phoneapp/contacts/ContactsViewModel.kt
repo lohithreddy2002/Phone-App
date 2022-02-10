@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.phoneapp.home.models.BlockedContactData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -16,7 +17,7 @@ class ContactsViewModel @Inject constructor(private val repo: ContactsRepository
 
     val list = MutableLiveData<ArrayList<Contact>>()
 
-    fun getcontacts(contentResolver: ContentResolver) {
+    fun getContacts(contentResolver: ContentResolver) {
         viewModelScope.launch {
             val contactsListAsync = async { repo.getPhoneContacts(contentResolver) }
             val contactNumbersAsync = async { repo.getContactNumbers(contentResolver) }
@@ -26,13 +27,14 @@ class ContactsViewModel @Inject constructor(private val repo: ContactsRepository
             contacts.forEach {
                 contactNumbers[it.id]?.let { numbers ->
                     it.numbers = numbers
-
                 }
             }
-            list.postValue(contacts)
+            repo.insertAllContacts(contacts)
             Timber.e("$contacts")
         }
     }
+
+    fun getAllContacts() = repo.getAllContacts()
 
     fun insert(contactData: Contact) {
         var number = contactData.numbers[0].replace("(", "").replace(")", "").replace("-", "")

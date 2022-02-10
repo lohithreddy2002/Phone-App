@@ -1,5 +1,13 @@
 package com.example.phoneapp.contacts
 
-data class Contact(val id: String, val name:String) {
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "contacts")
+data class Contact(
+    @PrimaryKey
+    val id: String,
+        val name: String
+) {
     var numbers = ArrayList<String>()
 }

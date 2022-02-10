@@ -10,14 +10,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.SnapHelper
 import com.example.phoneapp.ContactsAdapter
 import com.example.phoneapp.databinding.FragmentContactsBinding
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import java.security.Permission
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -27,15 +28,16 @@ class ContactsFragment : Fragment() {
 
     val viewModel by viewModels<ContactsViewModel>()
 
-    private val permissionLauncher =registerForActivityResult(ActivityResultContracts.RequestPermission()){
-        if(it){
-            binding.noPermission.visibility = View.GONE
-            viewModel.getcontacts(requireContext().contentResolver)
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                binding.noPermission.visibility = View.GONE
+                viewModel.getContacts(requireContext().contentResolver)
+            } else {
+                binding.noPermission.visibility = View.VISIBLE
+            }
         }
-        else{
-            binding.noPermission.visibility = View.VISIBLE
-        }
-    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,37 +52,43 @@ class ContactsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             binding.noPermission.visibility = View.GONE
-            viewModel.getcontacts(requireContext().contentResolver)
-        }
-        else{
+            viewModel.getContacts(requireContext().contentResolver)
+        } else {
             permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
         }
     }
 
     override fun onStart() {
-
-
         super.onStart()
         val adpter = ContactsAdapter {
-            viewModel.insert(it)
-            findNavController().navigateUp()
+            MaterialAlertDialogBuilder(requireContext()).setTitle("test").setPositiveButton("proceed") { a, b ->
+                viewModel.insert(it)
+                findNavController().navigateUp()
+            }.setNegativeButton("cancel") { a, b ->
+                a.dismiss()
+            }.setMessage("Are you sure you want to block this number").show()
+
         }
         binding.test.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = adpter
         }
-        viewModel.list.observe(viewLifecycleOwner) {
-            if (it.size > 0) {
-                binding.noBlocks.visibility = View.GONE
-                adpter.submitList(it.toList())
-            }
-            else{
-                binding.noBlocks.visibility = View.VISIBLE
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getAllContacts().collectLatest {
+                if (it.isNotEmpty()) {
+                    binding.noBlocks.visibility = View.GONE
+                    adpter.submitList(it)
+                } else {
+                    binding.noBlocks.visibility = View.VISIBLE
+                }
             }
         }
-
     }
 
 }

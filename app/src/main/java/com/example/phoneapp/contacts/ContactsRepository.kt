@@ -3,13 +3,14 @@ package com.example.phoneapp.contacts
 import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.ContactsContract
+import com.example.phoneapp.data.ContactsDao
 import com.example.phoneapp.home.models.BlockedContactData
 import com.example.phoneapp.data.DataBaseDB
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ContactsRepository @Inject constructor(private val dataBaseDB: DataBaseDB) {
+class ContactsRepository @Inject constructor(private val dao: ContactsDao) {
 
-    private val dao = dataBaseDB.contactsDao()
 
     fun getPhoneContacts(contentResolver: ContentResolver): ArrayList<Contact> {
         val contactsList = ArrayList<Contact>()
@@ -66,4 +67,13 @@ class ContactsRepository @Inject constructor(private val dataBaseDB: DataBaseDB)
         return contactsNumberMap
     }
     suspend fun insertContact(data: BlockedContactData) = dao.insertContact(data)
+
+    suspend fun insertAllContacts(data:List<Contact>){
+        dao.insertListOfContacts(data)
+    }
+
+    fun getAllContacts():Flow<List<Contact>>{
+        return dao.getAllContacts()
+    }
+
 }

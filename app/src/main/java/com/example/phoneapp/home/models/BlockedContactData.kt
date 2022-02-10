@@ -3,7 +3,7 @@ package com.example.phoneapp.home.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "contacts")
+@Entity(tableName = "blocked_contacts")
 data class BlockedContactData(
     @PrimaryKey(autoGenerate = true)
     val id:Int = 0,

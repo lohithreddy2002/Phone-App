@@ -12,6 +12,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.phoneapp.R
@@ -19,6 +22,8 @@ import com.example.phoneapp.databinding.FragmentHomeBinding
 import com.example.phoneapp.home.HomeViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -83,17 +88,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getAllBlockedContacts()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             getRole()
         } else {
             requestPermission(permissionList)
         }
-
-    }
-
-    override fun onStart() {
-        super.onStart()
         adpter = BlockedContactAdapter {
             viewModel.deleteNumber(it)
         }
@@ -101,13 +100,20 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = adpter
         }
-        viewModel.blockedNumbers.observe(viewLifecycleOwner, {
-            if (it.isNotEmpty()) {
-                adpter.submitList(it)
-            } else {
-                binding.noBlocks.visibility = View.VISIBLE
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.getAllBlockedContacts().collectLatest {
+                    if (it.isNotEmpty()) {
+                        adpter.submitList(it)
+                    } else {
+                        binding.noBlocks.visibility = View.VISIBLE
+                    }
+                }
             }
-        })
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getCallLogs(requireContext().contentResolver)
+        }
 
         binding.addBlockContacts.setOnClickListener {
             findNavController().navigate(R.id.contactsFragment)

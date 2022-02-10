@@ -1,12 +1,14 @@
 package com.example.phoneapp.home
 
+import android.content.ContentResolver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.phoneapp.home.data.HomeRepository
 import com.example.phoneapp.home.models.BlockedContactData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,16 +28,16 @@ class HomeViewModel @Inject constructor(private val repo: HomeRepository) : View
     }
 
 
-    fun getAllBlockedContacts() {
-        viewModelScope.launch {
-            repo.getAllContacts().collect {
-                _blockedNumber.postValue(it)
-            }
-
-
-        }
+    fun getAllBlockedContacts(): Flow<List<BlockedContactData>> {
+        return repo.getAllContacts()
     }
 
+    fun getCallLogs(contentResolver: ContentResolver) {
+        viewModelScope.launch {
+            val listAsync = async { repo.getCallLogs(contentResolver) }
+            val list = listAsync.await()
+        }
+    }
 
 
 }

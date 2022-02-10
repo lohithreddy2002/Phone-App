@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.phoneapp.contacts.Contact
 import com.example.phoneapp.home.models.BlockedContactData
 import kotlinx.coroutines.flow.Flow
 
@@ -14,7 +15,13 @@ interface ContactsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertContact(data: BlockedContactData)
 
-    @Query("SELECT * FROM CONTACTS")
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertListOfContacts(data:List<Contact>)
+
+    @Query("SELECT * FROM contacts")
+    fun getAllContacts():Flow<List<Contact>>
+
+    @Query("SELECT * FROM blocked_contacts")
     fun getContacts(): Flow<List<BlockedContactData>>
 
 
@@ -22,7 +29,7 @@ interface ContactsDao {
     suspend fun deleteContact(data: BlockedContactData)
 
 
-    @Query("Select * from contacts where phone =:number")
+    @Query("Select * from blocked_contacts where phone =:number")
     suspend fun findContact(number: String): BlockedContactData?
 
 }
